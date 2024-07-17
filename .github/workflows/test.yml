@@ -1,0 +1,29 @@
+name: Test Upload
+run-name: Test Upload
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test-upload:
+    name: Test Upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create Mock Source Files
+        shell: bash
+        run: |
+          echo "This is a mock source file" > source1.txt
+          echo "This is another mock source file" > source2.txt
+          echo "This is a third mock source file" > source3.txt
+
+      - name: Upload Artifact
+        uses: AlexGidarakos/upload-encrypted-artifact@main
+        with:
+          source: source?.txt
+          password: supersecretpassword
+          localName: myartifact.tar.7z
+          remoteName: myartifact
+          retentionInDays: 7
+          compressionLevel: 5
+          overwrite: true

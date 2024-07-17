@@ -1,0 +1,85 @@
+name: Upload Encrypted Artifact
+description: Compress and encrypt one or more build artifacts into a single archive and upload this as a GitHub Actions artifact
+author: Alexandros Gidarakos
+
+branding:
+  icon: lock
+  color: red
+
+inputs:
+  source:
+    description: A file, directory or wildcard pattern that describes what to include in the artifact
+    required: false
+    default: source
+  password:
+    description: A text password from which an AES-256 cipher key is derived and used to encrypt the artifact
+    required: true
+  compressionLevel:
+    description: >
+      The level of LZMA compression used when creating the artifact.
+      The value can range from 0 (no compression) to 9 (best compression).
+      Values above 4 increase the runtime dramatically with only minimal improvement to the size reduction.
+      For large files that are not easily compressed, a value of 1 is recommended for significantly faster execution.
+    required: false
+    default: 3
+  localName:
+    description: Filename of the local artifact before it is uploaded to GitHub
+    required: false
+    default: artifact.tar.7z
+  remoteName:
+    description: Name of the remote artifact in GitHub after the upload
+    required: false
+    default: artifact
+  retentionInDays:
+    description: >
+      Duration after which artifact will expire in days.
+      0 means using the default value defined in the repository settings.
+      Actual values can range from 1 to 90 (public repositories) or 400 (private repositories).
+    required: false
+    default: 0
+  overwrite:
+    description: >
+      Action behaviour if an artifact with the same name already exists for the same workflow run.
+      If true, an artifact with a matching name will be deleted before a new one is uploaded.
+      If false, the action will fail if an artifact for the given name already exists.
+      Does not fail if the artifact does not exist.
+    required: false
+    default: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: Print Inputs
+      shell: bash
+      run: |
+        echo "DEBUG: Printing values of input variables"
+        echo "${{ toJSON(inputs) }}"
+
+    - name: Check Source Files
+      shell: bash
+      run: |
+        echo "INFO: Checking source files"
+        ls -l ${{ inputs.source }}
+
+    - name: Create Local Artifact
+      shell: bash
+      run: |
+        echo "INFO: Compressing and encrypting source files"
+        tar cf - ${{ inputs.source }} | 7z a -si -t7z -mx=${{ inputs.compressionLevel }} -mhe=on -p"${{ inputs.password }}" ${{ inputs.localName }}
+
+    - name: Check Local Artifact
+      shell: bash
+      run: |
+        echo "INFO: Checking local artifact"
+        ls -l ${{ inputs.localName }}
+
+    - name: Upload Local Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{ inputs.localName }}
+        name: ${{ inputs.remoteName }}
+        if-no-files-found: error
+        retention-days: ${{ inputs.retentionInDays }}
+        compression-level: 0  # No compression needed as the local artifact is already compressed
+        overwrite: ${{ inputs.overwrite }}

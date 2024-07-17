@@ -1,0 +1,9 @@
+# macOS DS Store files
+.DS_Store
+
+# Visual Studio Code settings
+.vscode
+
+# Filename substring for ad-hoc file exclusions
+*gitignore*
+!.gitignore
