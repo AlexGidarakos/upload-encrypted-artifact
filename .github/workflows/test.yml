@@ -10,15 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Create mock files
+      - name: Checkout action file
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            action.yml
+          sparse-checkout-cone-mode: false
+
+      - name: Create mock artifacts
         shell: bash
         run: |
-          echo "This is a mock file" > file1.txt
-          echo "This is another mock file" > file2.txt
-          echo "This is a third mock file" > file3.txt
+          echo "This is a mock artifact" > file1.txt
+          echo "This is another mock artifact" > file2.txt
+          echo "This is a third mock artifact" > file3.txt
 
-      - name: Upload
-        uses: AlexGidarakos/upload-encrypted-artifact@main
+      - name: Run action from file
+        uses: ./
         with:
           source: file?.txt
           password: supersecretpassword
