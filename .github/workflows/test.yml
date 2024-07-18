@@ -25,7 +25,7 @@ jobs:
           echo "This is a third mock artifact" > file3.txt
 
       - name: Run action from file
-        uses: .
+        uses: ./
         with:
           source: file?.txt
           password: supersecretpassword
