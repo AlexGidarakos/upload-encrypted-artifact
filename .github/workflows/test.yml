@@ -10,21 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout action file
+      - name: Checkout Action File
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
             action.yml
           sparse-checkout-cone-mode: false
 
-      - name: Create mock artifacts
+      - name: Create Mock Artifacts
         shell: bash
         run: |
           echo "This is a mock artifact" > file1.txt
           echo "This is another mock artifact" > file2.txt
           echo "This is a third mock artifact" > file3.txt
 
-      - name: Run action from file
+      - name: Run Action from File
         uses: ./
         with:
           source: file?.txt
