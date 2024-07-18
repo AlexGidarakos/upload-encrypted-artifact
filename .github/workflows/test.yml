@@ -20,17 +20,12 @@ jobs:
       - name: Create mock artifacts
         shell: bash
         run: |
-          pwd
-          ls -al .
-          ls -al ..
-          ls -al upload-encrypted-artifact
-          ls -al action.yml
           echo "This is a mock artifact" > file1.txt
           echo "This is another mock artifact" > file2.txt
           echo "This is a third mock artifact" > file3.txt
 
       - name: Run action from file
-        uses: ./action.yml
+        uses: .
         with:
           source: file?.txt
           password: supersecretpassword
