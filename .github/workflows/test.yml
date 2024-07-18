@@ -10,20 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Create Mock Source Files
+      - name: Create mock files
         shell: bash
         run: |
-          echo "This is a mock source file" > source1.txt
-          echo "This is another mock source file" > source2.txt
-          echo "This is a third mock source file" > source3.txt
+          echo "This is a mock file" > file1.txt
+          echo "This is another mock file" > file2.txt
+          echo "This is a third mock file" > file3.txt
 
-      - name: Upload Artifact
+      - name: Upload
         uses: AlexGidarakos/upload-encrypted-artifact@main
         with:
-          source: source?.txt
+          source: file?.txt
           password: supersecretpassword
-          localName: myartifact.tar.7z
-          remoteName: myartifact
-          retentionInDays: 7
-          compressionLevel: 5
+          compression-level: 5
+          local-name: myartifact.tar.7z
+          remote-name: myartifact
+          retention-days: 7
           overwrite: true
