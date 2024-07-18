@@ -76,13 +76,13 @@ A composite GitHub Action that creates encrypted [artifacts](https://docs.github
 
 ```yaml
 steps:
-- run: mkdir -p path/to/artifact
-- run: echo "Hello World" > path/to/artifact/hello.txt
-- uses: AlexGidarakos/upload-encrypted-artifact@v1
-  with:
-    source: path/to/artifact/hello.txt
-    password: ${{ secrets.SuperSecret }}
-    remote-name: my-artifact
+  - run: mkdir -p path/to/artifact
+  - run: echo "Hello World" > path/to/artifact/hello.txt
+  - uses: AlexGidarakos/upload-encrypted-artifact@v1
+    with:
+      source: path/to/artifact/hello.txt
+      password: ${{ secrets.SuperSecret }}
+      remote-name: my-artifact
 ```
 
 ### Upload an entire directory
@@ -130,12 +130,12 @@ Once uploaded, artifacts are immutable. Therefore, uploading new data as an arti
 Artifacts are retained for 90 days by default. You can specify a different retention period using the `retention-days` input:
 
 ```yaml
-  - run: echo "A short-lived artifact" > file.txt
-  - uses: AlexGidarakos/upload-encrypted-artifact@v1
-    with:
-      source: file.txt
-      password: ${{ secrets.SuperSecret }}
-      retention-days: 2
+- run: echo "A short-lived artifact" > file.txt
+- uses: AlexGidarakos/upload-encrypted-artifact@v1
+  with:
+    source: file.txt
+    password: ${{ secrets.SuperSecret }}
+    retention-days: 2
 ```
 
 A value of 0 means using the default value defined in the repository settings. Actual values can range from 1 to 90 (public repositories) or 400 (private repositories). For more information see [artifact and log retention policies](https://docs.github.com/en/free-pro-team@latest/actions/reference/usage-limits-billing-and-administration#artifact-and-log-retention-policy).
@@ -147,13 +147,13 @@ If an artifact upload is successful, then an `artifact-id` output is available. 
 #### Example output between steps
 
 ```yaml
-    - uses: AlexGidarakos/upload-encrypted-artifact@v1
-      id: upload
-      with:
-        source: path/to/artifact/
-        password: ${{ secrets.SuperSecret }}
-    - name: Output artifact ID
-      run: echo 'Artifact ID is ${{ steps.upload.outputs.artifact-id }}'
+- uses: AlexGidarakos/upload-encrypted-artifact@v1
+  id: upload
+  with:
+    source: path/to/artifact/
+    password: ${{ secrets.SuperSecret }}
+- name: Output artifact ID
+  run: echo 'Artifact ID is ${{ steps.upload.outputs.artifact-id }}'
 ```
 
 #### Example output between jobs
@@ -168,8 +168,8 @@ jobs:
       - uses: AlexGidarakos/upload-encrypted-artifact@v1
         id: upload
         with:
-        source: path/to/artifact/
-        password: ${{ secrets.SuperSecret }}
+          source: path/to/artifact/
+          password: ${{ secrets.SuperSecret }}
   job2:
     runs-on: ubuntu-latest
     needs: job1
